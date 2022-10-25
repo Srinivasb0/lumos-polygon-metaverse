@@ -62,3 +62,24 @@ function animate() {
     renderer.render( scene, camera );
 };
 animate();
+
+function mintNFT() {
+    // Parameters to create a NFT in the Metaverse
+    var _id = document.getElementById("id").value;
+    
+    // If Metamask is not available
+    if (typeof window.ethereum == "undefined") {
+        rej("You should install Metamask to use it!");
+    }
+
+    // Web3 Instance 
+    let web3 = new Web3(window.ethereum);
+    let contract = new web3.eth.Contract(abi, "0xb1613CEBFCCE54484aBbB603C0b2B5204B3F4bd2");
+
+    web3.eth.getAccounts().then((accounts) => {
+        contract.methods.mint(_id).send({ from: accounts[0] }).then((data) => {
+            console.log("NFT available in the Metaverse!");
+        });
+    });
+
+};
