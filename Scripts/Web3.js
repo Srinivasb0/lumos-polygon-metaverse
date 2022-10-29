@@ -32,18 +32,26 @@ const blockchain = new Promise((res, rej) => {
         });
     });
 
-    // Get your buildings made in the Metaverse
+    // Get the owner of the plot
     web3.eth.requestAccounts().then((accounts) => {
-        contract.methods.getOwnerBuildings().call({ from: accounts[0] }).then((buildings) => {
-            console.log("-> Your buildings: ", buildings);
+        contract.methods.ownerOf(tokenId).call({from: accounts[0] }).then((data) => {
+            console.log("-> Owner of plot: ", data);
         });
     });
 
-    // Get all the buildings made in the Metaverse 
+    // Get your buildings made in the Metaverse
+    web3.eth.requestAccounts().then((accounts) => {
+        contract.methods.plots().call({ from: accounts[0] }).then((data) => {
+            console.log("-> Your plot detailes are: ", data);
+        });
+    });
+
+    // Get all the plots made in the Metaverse 
     web3.eth.requestAccounts().then((accounts) => {
         contract.methods.totalSupply().call({ from: accounts[0] }).then((supply) => {
-            contract.methods.getBuildings().call({ from: accounts[0] }).then((data) => {
-                res({ supply: supply, building: data });
+            contract.methods.getPlots().call({ from: accounts[0] }).then((data) => {
+                res({ supply: supply, plot: data });
+                console.log(data);
             });
         });
     });
