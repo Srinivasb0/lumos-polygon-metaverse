@@ -9,9 +9,134 @@
 	</head>
 	<body>
 		<script src="../Scripts/three.js"></script>
-        <script src="../Scripts/land.js"></script>
-		<script>
+		<script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
+        <!-- <script type="module" src="../Scripts/land.js"></script> -->
+		<!-- <script type="module" src="../Scripts/Web3.js"></script> -->
+		<div class="col-sm">
+			<label class="form-label">NFT ID</label>
+			<input class="form-control" type="number" id="nft_id" required />
+			<input class="form-control" type="text" id="plot_owner" required />
+			<input class="form-control" type="text" id="to_address" required />
+			<input class="form-control" type="text" id="nft_id" required />
+		</div>
+		<button id="mint" type="submit" class="btn btn-primary">
+			Create a new NFT!
+		</button>
+		<button id="buyNFT" type="submit" class="btn btn-primary">
+			Buy NFT!
+		</button>
+		<script type="module">
+			// const blockchain = require('../Scripts/Web3.js');
+			import blockchain from "../Scripts/Web3.js";
+
+			// Creating Scene.
+			const scene = new THREE.Scene();
+			// scene.background = new THREE.Color(0x00284d);
+
+			const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+
+			// Grid
+			const grid = new THREE.GridHelper( 20, 20, 0x888888, 0x444444 );
+			scene.add( grid );
+
+			var geometry = new THREE.PlaneGeometry(1, 1);
+			var texture = new THREE.TextureLoader().load( "../images/seed.png" );
+			var material = new THREE.MeshBasicMaterial( { map: texture, color: 0xffffff});
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.position.set(2, 2, 7);
+			scene.add(mesh);
+
+			camera.position.set( 0, 6, 15 );
+
+			function animate() {
+				requestAnimationFrame( animate );
+				renderer.render( scene, camera );
+			}
+			animate();
+
 			// Our Javascript will go here.
-		</script>
+			// Get your buildings made in the Metaverse
+			// const metaverse = await blockchain.then((result) => {
+			// 	result.plot.forEach((plot, index) => {
+			// 		if(index <= 3) {
+			// 			// Representation of NFT Token in metaverse
+			// 			// Setting plot 4 for metaverse
+			// 			var plot_name = "plot" + index;
+			// 			const plot_geometry = new THREE.BoxGeometry(plot.sizeX, plot.sizeY, plot.sizeZ);
+			// 			const plot_material = new THREE.MeshBasicMaterial({ color: 0x3B9EE8 });
+			// 			plot_name = new THREE.Mesh(plot_geometry, plot_material);
+			// 			plot_name.position.set(plot.posX, plot.posY, plot.posZ);
+			// 			scene.add(plot_name);
+			// 			// console.log("plot name", plot_name);
+			// 		}
+			// 	})
+			// });
+
+			const plot_output = await blockchain.then((result) => {
+				return result
+			});
+
+			// plot 1 details
+			var P1name =plot_output['plot'][0]['name'];
+			var P1owner =plot_output['plot'][0]['owner'];
+			var P1size = plot_output[['plot'][0]['sizeX'], ['plot'][0]['sizeY'], ['plot'][0]['sizeZ']];
+			var P1pos = plot_output[['plot'][0]['posX'], ['plot'][0]['posY'], ['plot'][0]['posZ']];
+			
+			// plot 2 details
+			var P2name =plot_output['plot'][1]['name'];
+			var P2owner =plot_output['plot'][1]['owner'];
+			var P2size = [plot_output['plot'][1]['sizeX'], plot_output['plot'][1]['sizeY'], plot_output['plot'][1]['sizeZ']];
+			var P2pos = [plot_output['plot'][1]['posX'], plot_output['plot'][1]['posY'], plot_output['plot'][1]['posZ']];
+
+			// plot 3 details
+			var P3name =plot_output['plot'][2]['name'];
+			var P3owner =plot_output['plot'][2]['owner'];
+			var P3size = [plot_output['plot'][2]['sizeX'], plot_output['plot'][2]['sizeY'], plot_output['plot'][2]['sizeZ']];
+			var P3pos = [plot_output['plot'][2]['posX'], plot_output['plot'][2]['posY'], plot_output['plot'][2]['posZ']];
+
+			// plot 4 details
+			var P4name =plot_output['plot'][3]['name'];
+			var P4owner =plot_output['plot'][3]['owner'];
+			var P4size = [plot_output['plot'][3]['sizeX'], plot_output['plot'][3]['sizeY'], plot_output['plot'][3]['sizeZ']];
+			var P4pos = [plot_output['plot'][3]['posX'], plot_output['plot'][3]['posY'], plot_output['plot'][3]['posZ']];
+			
+			//adding document
+			function showData() {
+				var newd = "hey";
+				document.getElementById('dataid').innerHTML = newd;
+			} 
+			
+			window.onload = async function() {
+				var newvar = "hello world";
+				document.getElementById('newId').innerHTML = newvar;
+				console.log(newvar)
+			}
+			</script>
+			<!-- LDraw.org CC BY 2.0 Parts Library attribution -->
+		<div style="display: block; position: absolute; bottom: 8px; left: 8px; width: 160px; padding: 0px; background-color: #c4e0e7;">
+			
+			<center>
+				<p id="dataid"></p>
+				<p>Owner : 0x0000000000</p>
+				<p>size : [5, 5, 5]</p>
+				<!-- <a href="http://www.ldraw.org"><img style="width: 145px" src="models/ldraw/ldraw_org_logo/Stamp145.png"></a> -->
+				<br />
+				
+			</center>
+			<p>Name : Plot 2</p>
+				<p>Owner : 0x0000000000</p>
+				<p>size : [5, 5, 5]</p>
+
+				<p>Name : Plot 3</p>
+				<p>Owner : 0x0000000000</p>
+				<p>size : [5, 5, 5]</p>
+
+				<p>Name : Plot 4</p>
+				<p>Owner : 0x0000000000</p>
+				<p>size : [5, 5, 5]</p>
+		</div>
 	</body>
 </html>
