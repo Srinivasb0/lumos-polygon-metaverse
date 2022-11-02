@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<style>
+    #info {
+	position: absolute;
+	top: 10px;
+	width: 100%;
+	text-align: center;
+	z-index: 100;
+	display:block;
+}
+</style>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script src="../Scripts/three.js"></script>
+		<script type="module">
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			const geometry = new THREE.CylinderGeometry( 200, 200, 10, 20 );
+			const material = new THREE.MeshNormalMaterial( );
+			const cube = new THREE.Mesh( geometry, material );
+			scene.add( cube );
+            scene.rotation.set(0.5, 0, 0);
+
+            // Making Avatar
+            var cover = new THREE.MeshNormalMaterial();
+            var body = new THREE.SphereGeometry(50);
+            var avatar = new THREE.Mesh(body, cover);
+            avatar.position.set(0,100,50);
+            scene.add(avatar);
+            var hand = new THREE.SphereGeometry(25);
+            var right_hand = new THREE.Mesh(hand, cover);
+            right_hand.position.set(-50, 75, 0);
+            scene.add(right_hand);
+            var left_hand = new THREE.Mesh(hand, cover);
+            left_hand.position.set(50, 75, 0);
+            scene.add(left_hand);
+            var foot = new THREE.SphereGeometry(25);
+            var right_foot = new THREE.Mesh(foot, cover);
+            right_foot.position.set(-25, 25, 0);
+            scene.add(right_foot);
+            var left_foot = new THREE.Mesh(foot, cover);
+            left_foot.position.set(25, 25, 0);
+            scene.add(left_foot);
+
+            // Create Forest
+            makeTreeAt( 100,  0);
+            makeTreeAt(-100,  0);
+            makeTreeAt( 120, 50);
+            makeTreeAt(-120, 50);
+
+            function makeTreeAt(x, z) {
+                var trunk = new THREE.Mesh(
+                    new THREE.CylinderGeometry(10, 10, 50),
+                    new THREE.MeshBasicMaterial({color: 0xA0522D})
+                );
+                var top = new THREE.Mesh(
+                    new THREE.SphereGeometry(25),
+                    new THREE.MeshBasicMaterial({color: 0x228B22})
+                );
+                top.position.y = 50;
+                trunk.add(top);
+                trunk.position.set(x, 50, z);
+                scene.add(trunk);
+            }
+
+            // Adding planes
+            // var plane_geometry = new THREE.PlaneGeometry(100, 100);
+            // var plane_mesh = new THREE.MeshBasicMaterial({color : 0xfffff});
+            // var plane = new THREE.Mesh(plane_geometry, plane_mesh);
+            // scene.add(plane);
+            // console.log(plane.position);
+            // plane.rotation.set(0.5, 0, 0.5);
+            // plane.position.set(-40, 0, 100);
+            land(-40, 100, 0x8d5d5d);
+            land(-10, 100, 0x86895d);
+            land(20, 100, 0x8d5d5d);
+            land(50, 100, 0x86895d);
+
+            land(-40, 140, 0xd8e7f5);
+            land(-10, 140, 0x616365);
+            land(20, 140, 0xd8e7f5);
+            land(50, 140, 0x616365);
+
+            function land(X, Z, color) {
+                var plane = new THREE.Mesh(
+                    new THREE.PlaneGeometry(25, 25),
+                    new THREE.MeshBasicMaterial({color : color})
+                );
+                plane.rotation.set(-1, 0, 0);
+                scene.add(plane);
+                plane.position.set(X, 20, Z);
+            }
+
+            // Making Avatar
+            // var gotchi = new THREE.TextureLoader().load('../images/seed.png');
+            // var bodyMesh = new THREE.MeshBasicMaterial({ map: gotchi }, { color: 0xffff00 });
+            // var bodyGeometry = new THREE.BoxGeometry(50, 50, 50);
+            // var body = new THREE.Mesh(bodyGeometry, bodyMesh);
+            // body.position.set(0, 150, 75)
+            // scene.add(body);
+
+
+            // var headMesh = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+            // var headGeometry = new THREE.SphereGeometry( 30, 30, 40 );;
+            // var head = new THREE.Mesh(headGeometry, headMesh);
+            // head.position.set(0,150, 200)
+            // scene.add(head);
+
+			camera.position.z = 300;
+            // camera.position.y = -40;
+
+			function animate() {
+				requestAnimationFrame( animate );
+				renderer.render( scene, camera );
+			};
+
+			animate();
+		</script>
+        <div style="display: block; position: absolute; bottom: 50px; left: 8px; width: 160px; padding: 0px; background-color: #83d5d59d;">
+			<center>
+				<!-- plot 1 -->
+				<p id="name1">Plot 1</p>
+				<p id="owner1">Owner : 0x0004</p>
+				<p id="Soil-Type">Soil Type : Red Soil</p>
+				<!-- <a href="http://www.ldraw.org"><img style="width: 145px" src="models/ldraw/ldraw_org_logo/Stamp145.png"></a> -->
+				<br />
+			</center>
+		</div>
+
+	</body>
+</html>
