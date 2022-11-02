@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script src="../Scripts/three.js"></script>
+		<script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script type="module" src="../Scripts/land.js"></script>
+		<!-- <script type="module" src="../Scripts/seed.js"></script> -->
+		<script type="module" src="../Scripts/Web3.js"></script>
+		<div class="col-sm">
+			<input class="form-control" type="number" id="nft_id" required />
+			<button id="mint" type="submit" class="btn btn-primary">
+				Buy Plot
+			</button>
+		</div>
+		<script type="module">
+			import blockchain from "../Scripts/Web3.js";
+
+			// Creating Scene.
+			const scene = new THREE.Scene();
+			// scene.background = new THREE.Color(0x00284d);
+
+			const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+
+			// Grid
+			const grid = new THREE.GridHelper( 20, 20, 0x888888, 0x444444 );
+			scene.add( grid );
+
+			var geometry = new THREE.PlaneGeometry(1, 1);
+			var texture = new THREE.TextureLoader().load( "../images/seed.png" );
+			var material = new THREE.MeshBasicMaterial( { map: texture, color: 0xffffff});
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.position.set(2, 2, 7);
+			scene.add(mesh);
+
+			camera.position.set( 0, 6, 15 );
+
+			function animate() {
+				requestAnimationFrame( animate );
+				renderer.render( scene, camera );
+			}
+			animate();
+
+			const plot_output = await blockchain.then((result) => {
+				return result
+			});
+
+			// plot 1 details
+			var P1name =plot_output['plot'][0]['name'];
+			var P1owner =plot_output['plot'][0]['owner'];
+			var P1size = plot_output[['plot'][0]['sizeX'], ['plot'][0]['sizeY'], ['plot'][0]['sizeZ']];
+			var P1pos = plot_output[['plot'][0]['posX'], ['plot'][0]['posY'], ['plot'][0]['posZ']];
+
+			// plot 2 details
+			var P2name =plot_output['plot'][1]['name'];
+			var P2owner =plot_output['plot'][1]['owner'];
+			var P2size = [plot_output['plot'][1]['sizeX'], plot_output['plot'][1]['sizeY'], plot_output['plot'][1]['sizeZ']];
+			var P2pos = [plot_output['plot'][1]['posX'], plot_output['plot'][1]['posY'], plot_output['plot'][1]['posZ']];
+
+			// plot 3 details
+			var P3name =plot_output['plot'][2]['name'];
+			var P3owner =plot_output['plot'][2]['owner'];
+			var P3size = [plot_output['plot'][2]['sizeX'], plot_output['plot'][2]['sizeY'], plot_output['plot'][2]['sizeZ']];
+			var P3pos = [plot_output['plot'][2]['posX'], plot_output['plot'][2]['posY'], plot_output['plot'][2]['posZ']];
+
+			// plot 4 details
+			var P4name =plot_output['plot'][3]['name'];
+			var P4owner =plot_output['plot'][3]['owner'];
+			var P4size = [plot_output['plot'][3]['sizeX'], plot_output['plot'][3]['sizeY'], plot_output['plot'][3]['sizeZ']];
+			var P4pos = [plot_output['plot'][3]['posX'], plot_output['plot'][3]['posY'], plot_output['plot'][3]['posZ']];
+			
+			//plot 1
+			document.getElementById('name1').innerHTML = P1name;
+			document.getElementById('owner1').innerHTML = P1owner;
+			document.getElementById('size1').innerHTML = "[5, 1, 5]";
+			document.getElementById('pos1').innerHTML = "[3, 1, 5]";
+
+			//plot2
+			document.getElementById('name2').innerHTML = P2name;
+			document.getElementById('owner2').innerHTML = P2owner;
+			document.getElementById('size2').innerHTML = "[5, 1, 5]";
+			document.getElementById('pos2').innerHTML = "[3, 1, 5]";
+
+			//plot3
+			document.getElementById('name3').innerHTML = P3name;
+			document.getElementById('owner3').innerHTML = P3owner;
+			document.getElementById('size3').innerHTML = "[5, 1, 5]";
+			document.getElementById('pos3').innerHTML = "[3, 1, 5]";
+
+			//plot4
+			document.getElementById('name4').innerHTML = P4name;
+			document.getElementById('owner4').innerHTML = P4owner;
+			document.getElementById('size4').innerHTML = "[5, 1, 5]";
+			document.getElementById('pos4').innerHTML = "[3, 1, 5]";
+
+			function showData() {
+				var newd = "hey";
+				document.getElementById('dataid').innerHTML = newd;
+			}
+
+			window.onload = async function() {
+				var newvar = "hello world";
+				document.getElementById('newId').innerHTML = newvar;
+				console.log(newvar)
+			}
+			</script>
+			<!-- LDraw.org CC BY 2.0 Parts Library attribution -->
+		<div style="display: block; position: absolute; bottom: 8px; left: 8px; width: 160px; padding: 0px; background-color: #c4e0e7;">
+			<center>
+				<!-- plot 1 -->
+				<p id="name1"></p>
+				<p id="owner1"></p>
+				<p id="size1"></p>
+				<p id="pos1"></p>
+				<!-- plot 2 -->
+				<p id="name2"></p>
+				<p id="owner2"></p>
+				<p id="size2"></p>
+				<p id="pos2"></p>
+				<!-- plot 3 -->
+				<p id="name3"></p>
+				<p id="owner3"></p>
+				<p id="size3"></p>
+				<p id="pos3"></p>
+				<!-- plot 4 -->
+				<p id="name4"></p>
+				<p id="owner4"></p>
+				<p id="size4"></p>
+				<p id="pos4"></p>
+				<!-- <a href="http://www.ldraw.org"><img style="width: 145px" src="models/ldraw/ldraw_org_logo/Stamp145.png"></a> -->
+				<br />
+			</center>
+		</div>
+	</body>
+</html>

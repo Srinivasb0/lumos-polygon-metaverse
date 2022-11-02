@@ -1,4 +1,20 @@
 <!DOCTYPE html>
+<style>
+    .text-info {
+	position: absolute;
+	top: 10px;
+	width: 100%;
+	text-align: center;
+	z-index: 100;
+	display:block;
+
+    .btn1-primary {
+        color: #fff;
+        background-color: #8d5d5d;
+        border-color: #2e6da4;
+}
+}
+</style>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -9,134 +25,150 @@
 	</head>
 	<body>
 		<script src="../Scripts/three.js"></script>
-		<script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
-        <!-- <script type="module" src="../Scripts/land.js"></script> -->
-		<!-- <script type="module" src="../Scripts/Web3.js"></script> -->
-		<div class="col-sm">
-			<label class="form-label">NFT ID</label>
-			<input class="form-control" type="number" id="nft_id" required />
-			<input class="form-control" type="text" id="plot_owner" required />
-			<input class="form-control" type="text" id="to_address" required />
-			<input class="form-control" type="text" id="nft_id" required />
-		</div>
-		<button id="mint" type="submit" class="btn btn-primary">
-			Create a new NFT!
-		</button>
-		<button id="buyNFT" type="submit" class="btn btn-primary">
-			Buy NFT!
-		</button>
+        <script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
 		<script type="module">
-			// const blockchain = require('../Scripts/Web3.js');
-			import blockchain from "../Scripts/Web3.js";
+            import blockchain from "../Scripts/Web3.js";
+            import abi from "../abi/landabi.json" assert {type: "json"};
 
-			// Creating Scene.
+
 			const scene = new THREE.Scene();
-			// scene.background = new THREE.Color(0x00284d);
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-			const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 			const renderer = new THREE.WebGLRenderer();
-			renderer.setSize(window.innerWidth, window.innerHeight);
-			document.body.appendChild(renderer.domElement);
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
 
-			// Grid
-			const grid = new THREE.GridHelper( 20, 20, 0x888888, 0x444444 );
-			scene.add( grid );
+			const geometry = new THREE.CylinderGeometry( 200, 200, 10, 20 );
+			const material = new THREE.MeshNormalMaterial( );
+			const cube = new THREE.Mesh( geometry, material );
+			scene.add( cube );
+            scene.rotation.set(0.5, 0, 0);
 
-			var geometry = new THREE.PlaneGeometry(1, 1);
-			var texture = new THREE.TextureLoader().load( "../images/seed.png" );
-			var material = new THREE.MeshBasicMaterial( { map: texture, color: 0xffffff});
-			var mesh = new THREE.Mesh(geometry, material);
-			mesh.position.set(2, 2, 7);
-			scene.add(mesh);
+            // Making Avatar
+            var cover = new THREE.MeshNormalMaterial();
+            var body = new THREE.SphereGeometry(50);
+            var avatar = new THREE.Mesh(body, cover);
+            avatar.position.set(0,100,50);
+            scene.add(avatar);
+            var hand = new THREE.SphereGeometry(25);
+            var right_hand = new THREE.Mesh(hand, cover);
+            right_hand.position.set(-50, 75, 0);
+            scene.add(right_hand);
+            var left_hand = new THREE.Mesh(hand, cover);
+            left_hand.position.set(50, 75, 0);
+            scene.add(left_hand);
+            var foot = new THREE.SphereGeometry(25);
+            var right_foot = new THREE.Mesh(foot, cover);
+            right_foot.position.set(-25, 25, 0);
+            scene.add(right_foot);
+            var left_foot = new THREE.Mesh(foot, cover);
+            left_foot.position.set(25, 25, 0);
+            scene.add(left_foot);
 
-			camera.position.set( 0, 6, 15 );
+            // Create Forest
+            makeTreeAt( 100,  0);
+            makeTreeAt(-100,  0);
+            makeTreeAt( 120, 50);
+            makeTreeAt(-120, 50);
+
+            function makeTreeAt(x, z) {
+                var trunk = new THREE.Mesh(
+                    new THREE.CylinderGeometry(10, 10, 50),
+                    new THREE.MeshBasicMaterial({color: 0xA0522D})
+                );
+                var top = new THREE.Mesh(
+                    new THREE.SphereGeometry(25),
+                    new THREE.MeshBasicMaterial({color: 0x228B22})
+                );
+                top.position.y = 50;
+                trunk.add(top);
+                trunk.position.set(x, 50, z);
+                scene.add(trunk);
+            }
+
+            // Adding Gotchi
+            gotchi(-40, 100, '../images/seed.png');
+            gotchi(-10, 100, '../images/seed.png');
+            gotchi(20, 100, '../images/seed.png');
+            gotchi(50, 100, '../images/seed.png');
+
+            function gotchi(X, Z, texture) {
+                var texture = new THREE.TextureLoader().load(texture);
+                console.log(texture);
+                var mesh = new THREE.MeshBasicMaterial({ map: texture }, { color: 0xffff00 });
+                var geometry = new THREE.PlaneGeometry(15, 15);
+                var gotchi = new THREE.Mesh(geometry, mesh);
+                scene.add(gotchi);
+                gotchi.position.set(X, 30, Z);
+            }
+
+
+			camera.position.z = 300;
 
 			function animate() {
-				requestAnimationFrame( animate );
-				renderer.render( scene, camera );
-			}
+                requestAnimationFrame( animate );
+                renderer.render( scene, camera );
+            };
+
 			animate();
 
-			// Our Javascript will go here.
-			// Get your buildings made in the Metaverse
-			// const metaverse = await blockchain.then((result) => {
-			// 	result.plot.forEach((plot, index) => {
-			// 		if(index <= 3) {
-			// 			// Representation of NFT Token in metaverse
-			// 			// Setting plot 4 for metaverse
-			// 			var plot_name = "plot" + index;
-			// 			const plot_geometry = new THREE.BoxGeometry(plot.sizeX, plot.sizeY, plot.sizeZ);
-			// 			const plot_material = new THREE.MeshBasicMaterial({ color: 0x3B9EE8 });
-			// 			plot_name = new THREE.Mesh(plot_geometry, plot_material);
-			// 			plot_name.position.set(plot.posX, plot.posY, plot.posZ);
-			// 			scene.add(plot_name);
-			// 			// console.log("plot name", plot_name);
-			// 		}
-			// 	})
-			// });
 
-			const plot_output = await blockchain.then((result) => {
+            // Create plots in blockchain
+            blockchain.then((result) => {
+            result.plot.forEach((plot, index) => {
+                if(index <= 8) {
+                    // Representation of NFT Token in metaverse
+                    // Setting plot 4 for metaverse
+                    var plot_name = "plot" + index;
+                    let color = [0x8d5d5d, 0x86895d, 0x8d5d5d, 0x86895d, 
+                                    0xd8e7f5, 0x616365, 0xd8e7f5, 0x616365]
+
+                    const plot_geometry = new THREE.PlaneGeometry(plot.sizeX, plot.sizeY);
+                    const plot_material = new THREE.MeshBasicMaterial({ color: color[index] });
+                    plot_name = new THREE.Mesh(plot_geometry, plot_material);
+                    plot_name.rotation.set(-1, 0, 0);
+                    scene.add(plot_name);
+                    plot_name.position.set(plot.posX, plot.posY, plot.posZ);
+                }
+            })
+        });
+
+        const plot_output = await blockchain.then((result) => {
 				return result
 			});
 
-			// plot 1 details
-			var P1name =plot_output['plot'][0]['name'];
+        // plot owner details
 			var P1owner =plot_output['plot'][0]['owner'];
-			var P1size = plot_output[['plot'][0]['sizeX'], ['plot'][0]['sizeY'], ['plot'][0]['sizeZ']];
-			var P1pos = plot_output[['plot'][0]['posX'], ['plot'][0]['posY'], ['plot'][0]['posZ']];
-			
-			// plot 2 details
-			var P2name =plot_output['plot'][1]['name'];
-			var P2owner =plot_output['plot'][1]['owner'];
-			var P2size = [plot_output['plot'][1]['sizeX'], plot_output['plot'][1]['sizeY'], plot_output['plot'][1]['sizeZ']];
-			var P2pos = [plot_output['plot'][1]['posX'], plot_output['plot'][1]['posY'], plot_output['plot'][1]['posZ']];
+            var P2owner =plot_output['plot'][1]['owner'];
+            var P3owner =plot_output['plot'][2]['owner'];
+            var P4owner =plot_output['plot'][3]['owner'];
+            var P5owner =plot_output['plot'][4]['owner'];
+            var P6owner =plot_output['plot'][5]['owner'];
+            var P7owner =plot_output['plot'][6]['owner'];
+            var P8owner =plot_output['plot'][7]['owner'];
 
-			// plot 3 details
-			var P3name =plot_output['plot'][2]['name'];
-			var P3owner =plot_output['plot'][2]['owner'];
-			var P3size = [plot_output['plot'][2]['sizeX'], plot_output['plot'][2]['sizeY'], plot_output['plot'][2]['sizeZ']];
-			var P3pos = [plot_output['plot'][2]['posX'], plot_output['plot'][2]['posY'], plot_output['plot'][2]['posZ']];
+			document.getElementById('owner1').innerHTML = P1owner;
+			document.getElementById('owner2').innerHTML = P2owner;
+			document.getElementById('owner3').innerHTML = P3owner;
+			document.getElementById('owner4').innerHTML = P4owner;
+            document.getElementById('owner5').innerHTML = P5owner;
+            document.getElementById('owner6').innerHTML = P6owner;
+            document.getElementById('owner7').innerHTML = P7owner;
+            document.getElementById('owner8').innerHTML = P8owner;
 
-			// plot 4 details
-			var P4name =plot_output['plot'][3]['name'];
-			var P4owner =plot_output['plot'][3]['owner'];
-			var P4size = [plot_output['plot'][3]['sizeX'], plot_output['plot'][3]['sizeY'], plot_output['plot'][3]['sizeZ']];
-			var P4pos = [plot_output['plot'][3]['posX'], plot_output['plot'][3]['posY'], plot_output['plot'][3]['posZ']];
-			
-			//adding document
-			function showData() {
-				var newd = "hey";
-				document.getElementById('dataid').innerHTML = newd;
-			} 
-			
-			window.onload = async function() {
-				var newvar = "hello world";
-				document.getElementById('newId').innerHTML = newvar;
-				console.log(newvar)
-			}
-			</script>
-			<!-- LDraw.org CC BY 2.0 Parts Library attribution -->
-		<div style="display: block; position: absolute; bottom: 8px; left: 8px; width: 160px; padding: 0px; background-color: #c4e0e7;">
-			
+		</script>
+        <div style="display: block; position: absolute; bottom: 50px; left: 8px; width: 160px; padding: 0px; background-color: #23b4b49d;">
 			<center>
-				<p id="dataid"></p>
-				<p>Owner : 0x0000000000</p>
-				<p>size : [5, 5, 5]</p>
-				<!-- <a href="http://www.ldraw.org"><img style="width: 145px" src="models/ldraw/ldraw_org_logo/Stamp145.png"></a> -->
+                <button type="button" class="btn btn-primary" id="owner1" background-color: 0x8d5d5d></button>
+                <button type="button" class="btn btn-primary" id="owner2" background-color: 0x86895d></button>
+                <button type="button" class="btn btn-primary" id="owner3" background-color: 0x8d5d5d></button>
+                <button type="button" class="btn btn-primary" id="owner4" background-color: 0x86895d></button>
+                <button type="button" class="btn btn-primary" id="owner5" background-color: 0xd8e7f5></button>
+                <button type="button" class="btn btn-primary" id="owner6" background-color: 0x616365></button>
+                <button type="button" class="btn btn-primary" id="owner7" background-color: 0xd8e7f5></button>
+                <button type="button" class="btn btn-primary" id="owner8" background-color: 0x616365></button>
 				<br />
-				
 			</center>
-			<p>Name : Plot 2</p>
-				<p>Owner : 0x0000000000</p>
-				<p>size : [5, 5, 5]</p>
-
-				<p>Name : Plot 3</p>
-				<p>Owner : 0x0000000000</p>
-				<p>size : [5, 5, 5]</p>
-
-				<p>Name : Plot 4</p>
-				<p>Owner : 0x0000000000</p>
-				<p>size : [5, 5, 5]</p>
 		</div>
 	</body>
 </html>
