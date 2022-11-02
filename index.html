@@ -18,17 +18,24 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>My first three.js app</title>
+		<title>Peagotchi Metaverse</title>
 		<style>
 			body { margin: 0; }
 		</style>
 	</head>
 	<body>
 		<script src="../Scripts/three.js"></script>
+        <!-- <script src="../Scripts/land.js"></script> -->
         <script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
+        <div class="col-sm">
+			<input class="form-control" type="number" id="nft_id" required />
+			<button id="mint" type="submit" class="btn btn-primary">
+				Buy in Polygon
+			</button>
+		</div>
 		<script type="module">
             import blockchain from "../Scripts/Web3.js";
-            import abi from "../abi/landabi.json" assert {type: "json"};
+            import landabi from "../abi/landabi.json" assert {type: "json"};
 
 
 			const scene = new THREE.Scene();
@@ -111,6 +118,38 @@
             };
 
 			animate();
+            // Mint NFT
+            const land_address = "0x98598686C440554182b3ceC3694d18B1F5A09020";
+
+            // New NFT
+        const buttonMint = document.getElementById('mint');
+        buttonMint.addEventListener('click', mintNFT);
+
+
+        function mintNFT() {
+            // Parameters to create a NFT in the Metaverse
+            var _id = document.getElementById("nft_id").value;
+
+            // If Metamask is not available
+            if (typeof window.ethereum == "undefined") {
+                rej("You should install Metamask to use it!");
+            }
+
+            // Web3 Instance
+            let web3 = new Web3(window.ethereum);
+            let contract = new web3.eth.Contract(landabi, land_address);
+
+            try {
+                web3.eth.getAccounts().then((accounts) => {
+                    contract.methods.mint(_id).send({ from: accounts[0] }).then((data) => {
+                        console.log("NFT available in the Metaverse!");
+                    });
+                });
+            } catch (error) {
+                console.log("Error");
+            }
+        };
+
 
 
             // Create plots in blockchain
