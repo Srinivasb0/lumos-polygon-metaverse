@@ -1,6 +1,6 @@
-import abi from "../abi/abi.json" assert {type: "json"};
+import abi from "../abi/landabi.json" assert {type: "json"};
 
-// SC: 0xb1613CEBFCCE54484aBbB603C0b2B5204B3F4bd2
+const address = "0x98598686C440554182b3ceC3694d18B1F5A09020";
 
 const blockchain = new Promise((res, rej) => {
 
@@ -11,7 +11,7 @@ const blockchain = new Promise((res, rej) => {
 
     // Web3 Instance 
     let web3 = new Web3(window.ethereum);
-    let contract = new web3.eth.Contract(abi, "0xb1613CEBFCCE54484aBbB603C0b2B5204B3F4bd2");
+    let contract = new web3.eth.Contract(abi, address);
 
     // Get my Metamask address
     web3.eth.getAccounts().then((accounts) => {
@@ -33,18 +33,18 @@ const blockchain = new Promise((res, rej) => {
     });
 
     // Get the owner of the plot
-    web3.eth.requestAccounts().then((accounts) => {
-        contract.methods.ownerOf(tokenId).call({from: accounts[0] }).then((data) => {
-            console.log("-> Owner of plot: ", data);
-        });
-    });
+    // web3.eth.requestAccounts().then((accounts) => {
+    //     contract.methods.ownerOf(tokenId).call({from: accounts[0] }).then((data) => {
+    //         console.log("-> Owner of plot: ", data);
+    //     });
+    // });
 
     // Get your buildings made in the Metaverse
-    web3.eth.requestAccounts().then((accounts) => {
-        contract.methods.plots().call({ from: accounts[0] }).then((data) => {
-            console.log("-> Your plot detailes are: ", data);
-        });
-    });
+    // web3.eth.requestAccounts().then((accounts) => {
+    //     contract.methods.plots().call({ from: accounts[0] }).then((data) => {
+    //         console.log("-> Your plot detailes are: ", data);
+    //     });
+    // });
 
     // Get all the plots made in the Metaverse 
     web3.eth.requestAccounts().then((accounts) => {
