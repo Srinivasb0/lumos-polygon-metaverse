@@ -25,18 +25,17 @@
 	</head>
 	<body>
 		<script src="../Scripts/three.js"></script>
-        <!-- <script src="../Scripts/land.js"></script> -->
         <script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
         <div class="col-sm">
 			<input class="form-control" type="number" id="nft_id" required />
-			<button id="mint" type="submit" class="btn btn-primary">
-				Buy in Polygon
+			<button id="mint" class="btn btn-primary" type="submit">
+				Mint Land in Polygon
 			</button>
 		</div>
 		<script type="module">
             import blockchain from "../Scripts/Web3.js";
             import landabi from "../abi/landabi.json" assert {type: "json"};
-
 
 			const scene = new THREE.Scene();
 			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -93,11 +92,29 @@
                 scene.add(trunk);
             }
 
+            function handler(soilTemp, GrowthDays) {
+                var day_count = GrowthDays;
+                var avg_temp = soilTemp;
+                console.log("check temp:", avg_temp);
+
+                if((avg_temp > 12 && avg_temp <18) && (day_count > 0 && day_count <10) ) {
+                    gotchi(-40, 100, '../images/seed.png');
+                }
+
+                else if((avg_temp > 12 && avg_temp <18) && (day_count > 50 && day_count <80) ) {
+                    gotchi(-40, 100, '../images/1-growth.png');
+                }
+
+                else if((avg_temp > 12 && avg_temp <18) && (day_count > 90 && day_count <120)) {
+                    gotchi(-40, 100, '../images/1-yield.png');
+                }
+            };
+
             // Adding Gotchi
-            gotchi(-40, 100, '../images/seed.png');
-            gotchi(-10, 100, '../images/seed.png');
-            gotchi(20, 100, '../images/seed.png');
-            gotchi(50, 100, '../images/seed.png');
+            // gotchi(-40, 100, '../images/seed.png');
+            // gotchi(-10, 100, '../images/seed.png');
+            // gotchi(20, 100, '../images/seed.png');
+            // gotchi(50, 100, '../images/seed.png');
 
             function gotchi(X, Z, texture) {
                 var texture = new THREE.TextureLoader().load(texture);
@@ -109,8 +126,45 @@
                 gotchi.position.set(X, 30, Z);
             }
 
-
 			camera.position.z = 300;
+
+            function numRange(a, b) {
+                return a, b
+            }
+
+            var obj = {
+                name: "Pea Crop",
+                Soil_Temp: 17,
+                Soil_Moisture: 14,
+                Growth_Days: 1
+            };
+
+            const gui = new dat.GUI();
+            // String field
+            gui.add(obj, "name");
+            gui.add(obj, "Soil_Moisture");
+
+            // Temperature with slider
+            gui.add(obj, "Soil_Temp", 0, 20, 1).onChange((val) => {
+                soilTemp = val;
+                simple(); 
+            });
+            // Growth days slider
+            gui.add(obj, "Growth_Days", 1, 120).onChange((val) => {
+                GrowthDays = val;
+                simple();
+            });
+            // simple function
+            function simple() {
+                console.log("test");
+                handler(soilTemp, GrowthDays);
+            }
+
+            var soilTemp = 17;
+            var GrowthDays = 1;
+            handler(soilTemp, GrowthDays);
+
+            // Change Gotchi
 
 			function animate() {
                 requestAnimationFrame( animate );
@@ -149,8 +203,6 @@
                 console.log("Error");
             }
         };
-
-
 
             // Create plots in blockchain
             blockchain.then((result) => {
@@ -198,14 +250,14 @@
 		</script>
         <div style="display: block; position: absolute; bottom: 50px; left: 8px; width: 160px; padding: 0px; background-color: #23b4b49d;">
 			<center>
-                <button type="button" class="btn btn-primary" id="owner1" background-color: 0x8d5d5d></button>
-                <button type="button" class="btn btn-primary" id="owner2" background-color: 0x86895d></button>
-                <button type="button" class="btn btn-primary" id="owner3" background-color: 0x8d5d5d></button>
-                <button type="button" class="btn btn-primary" id="owner4" background-color: 0x86895d></button>
-                <button type="button" class="btn btn-primary" id="owner5" background-color: 0xd8e7f5></button>
-                <button type="button" class="btn btn-primary" id="owner6" background-color: 0x616365></button>
-                <button type="button" class="btn btn-primary" id="owner7" background-color: 0xd8e7f5></button>
-                <button type="button" class="btn btn-primary" id="owner8" background-color: 0x616365></button>
+                <button type="button" id="owner1" style="background-color: #8d5d5d ;"></button>
+                <button type="button" id="owner2" style="background-color : #86895d"></button>
+                <button type="button" id="owner3" style="background-color: #8d5d5d"></button>
+                <button type="button" id="owner4" style="background-color: #86895d"></button>
+                <button type="button" id="owner5" style="background-color: #d8e7f5"></button>
+                <button type="button" id="owner6" style="background-color: #616365"></button>
+                <button type="button" id="owner7" style="background-color: #d8e7f5"></button>
+                <button type="button" id="owner8" style="background-color: #616365"></button>
 				<br />
 			</center>
 		</div>
